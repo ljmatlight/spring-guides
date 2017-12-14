@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_gs-caching" default="compile.module.gs-caching">
+  <dirname property="module.gs-caching.basedir" file="${ant.file.module_gs-caching}"/>
+  
+  <property name="module.jdk.home.gs-caching" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.gs-caching" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.gs-caching" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.gs-caching" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="gs-caching.output.dir" value="${module.gs-caching.basedir}/target/classes"/>
+  <property name="gs-caching.testoutput.dir" value="${module.gs-caching.basedir}/target/test-classes"/>
+  
+  <path id="gs-caching.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="gs-caching.module.production.classpath">
+    <path refid="${module.jdk.classpath.gs-caching}"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-cache:1.5.9.release.classpath"/>
+  </path>
+  
+  <path id="gs-caching.runtime.production.module.classpath">
+    <pathelement location="${gs-caching.output.dir}"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-cache:1.5.9.release.classpath"/>
+  </path>
+  
+  <path id="gs-caching.module.classpath">
+    <path refid="${module.jdk.classpath.gs-caching}"/>
+    <pathelement location="${gs-caching.output.dir}"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-cache:1.5.9.release.classpath"/>
+  </path>
+  
+  <path id="gs-caching.runtime.module.classpath">
+    <pathelement location="${gs-caching.testoutput.dir}"/>
+    <pathelement location="${gs-caching.output.dir}"/>
+    <path refid="library.maven:_org.springframework.boot:spring-boot-starter-cache:1.5.9.release.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.gs-caching">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.gs-caching">
+    <patternset refid="excluded.from.module.gs-caching"/>
+  </patternset>
+  
+  <path id="gs-caching.module.sourcepath">
+    <dirset dir="${module.gs-caching.basedir}">
+      <include name="src/main/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.gs-caching" depends="compile.module.gs-caching.production,compile.module.gs-caching.tests" description="Compile module gs-caching"/>
+  
+  <target name="compile.module.gs-caching.production" depends="register.custom.compilers" description="Compile module gs-caching; production classes">
+    <mkdir dir="${gs-caching.output.dir}"/>
+    <javac2 destdir="${gs-caching.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.gs-caching}/javac">
+      <compilerarg line="${compiler.args.gs-caching}"/>
+      <bootclasspath refid="gs-caching.module.bootclasspath"/>
+      <classpath refid="gs-caching.module.production.classpath"/>
+      <src refid="gs-caching.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.gs-caching"/>
+    </javac2>
+    
+    <copy todir="${gs-caching.output.dir}">
+      <fileset dir="${module.gs-caching.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.gs-caching.tests" depends="register.custom.compilers,compile.module.gs-caching.production" description="compile module gs-caching; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.gs-caching" description="cleanup module">
+    <delete dir="${gs-caching.output.dir}"/>
+    <delete dir="${gs-caching.testoutput.dir}"/>
+  </target>
+</project>
